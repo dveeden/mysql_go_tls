@@ -9,25 +9,13 @@ import (
 )
 
 func main() {
-	tlsvalues := []string{"false", "skip-verify", "cache", "serversuites", "tls10", "tls11"}
+	tlsvalues := []string{"false", "skip-verify", "cache"}
 	rounds := 100
 
 	scache := tls.NewLRUClientSessionCache(32)
 	mysql.RegisterTLSConfig("cache", &tls.Config{
 		InsecureSkipVerify: true,
 		ClientSessionCache: scache,
-	})
-	mysql.RegisterTLSConfig("serversuites", &tls.Config{
-		InsecureSkipVerify:       true,
-		PreferServerCipherSuites: true,
-	})
-	mysql.RegisterTLSConfig("tls10", &tls.Config{
-		InsecureSkipVerify: true,
-		MaxVersion:         tls.VersionTLS10,
-	})
-	mysql.RegisterTLSConfig("tls11", &tls.Config{
-		InsecureSkipVerify: true,
-		MaxVersion:         tls.VersionTLS11,
 	})
 
 	for _, tlsvalue := range tlsvalues {
@@ -49,7 +37,8 @@ func main() {
 				db.Close()
 			}
 			elapsed := time.Since(start)
-			fmt.Printf("%d rounds in %s (%fms per loop)\n", rounds, elapsed, (float64(elapsed.Nanoseconds()/int64(rounds)))/1000000)
+			fmt.Printf("%d rounds in %s (%fms per loop)\n", rounds, elapsed,
+				(float64(elapsed.Nanoseconds()/int64(rounds)))/1000000)
 		}
 	}
 }

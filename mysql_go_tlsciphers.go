@@ -20,7 +20,7 @@ func main() {
 			PreferServerCipherSuites: true,
 			CipherSuites:             []uint16{cipher},
 		})
-		dsn := "msandbox:msandbox@tcp(127.0.0.1:5633)/test?tls=custom" + string(n)
+		dsn := "msandbox:msandbox@tcp(127.0.0.1:5717)/test?tls=custom" + string(n)
 		var ciphername string
 		db, err := sql.Open("mysql", dsn)
 		if err != nil {
