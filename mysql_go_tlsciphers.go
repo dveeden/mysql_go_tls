@@ -1,14 +1,20 @@
+// Benchmark MySQL performance with specific TLS ciphers
+
 package main
 
 import (
 	"crypto/tls"
 	"database/sql"
+	"flag"
 	"fmt"
 	"github.com/go-sql-driver/mysql"
 	"time"
 )
 
 func main() {
+	base_dsn := flag.String("dsn", "msandbox:msandbox@tcp(localhost:5717)/test", "Base DSN")
+	flag.Parse()
+
 	ciphers := []uint16{0x0005, 0x000a, 0x002f, 0x0035, 0x003c, 0x009c, 0x009d,
 		0xc007, 0xc009, 0xc00a, 0xc011, 0xc012, 0xc013, 0xc014, 0xc023,
 		0xc027, 0xc02f, 0xc02b, 0xc030, 0xc02c, 0xcca8, 0xcca9}
@@ -20,7 +26,7 @@ func main() {
 			PreferServerCipherSuites: true,
 			CipherSuites:             []uint16{cipher},
 		})
-		dsn := "msandbox:msandbox@tcp(127.0.0.1:5717)/test?tls=custom" + string(n)
+		dsn := *base_dsn + "?tls=custom" + string(n)
 		var ciphername string
 		db, err := sql.Open("mysql", dsn)
 		if err != nil {
